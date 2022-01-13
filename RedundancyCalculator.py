@@ -3,6 +3,7 @@ from gooey import Gooey, GooeyParser
 from dateutil import parser as p
 import codecs
 import re
+from datetime import datetime
 
 if sys.stdout.encoding != 'UTF-8':
     sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
@@ -36,6 +37,7 @@ if sys.stderr.encoding != 'UTF-8':
 def main():
 
     parser = GooeyParser(description="Calculate your Redundancy Package -By James Poland")
+    today = datetime.today().strftime('%Y-%m-%d')
     g = parser.add_argument_group("EnterDetails Below to Calculate Redundancy Package.  Values are Estimated Only")
         # parsers = argparse.ArgumentParser(description='Calculate your Redundancy Package -By James Poland.')
         #parsers._optionals.title = "Add Your Details Here"
@@ -46,8 +48,8 @@ def main():
         #    required=True
         #    #type=valid_date
         #)
-    g.add_argument('startdate', help='Enter date you started', widget="DateChooser")
-    g.add_argument('enddate', help='Enter date your term ends', widget="DateChooser")
+    g.add_argument('startdate', help='Enter date your term started, please use the calendar!', widget="DateChooser", default=today)
+    g.add_argument('enddate', help='Enter date your term ends, please use the calendar!', widget="DateChooser", default=today )
     g.add_argument('YearlySalary', help='Enter your yearly salary')
 
 
@@ -71,8 +73,11 @@ def main():
     start_date = p.parse(args['startdate'])
     wages = args['YearlySalary']
     wagesclean = int(re.sub("[^\d\.]", "", wages))
-
-        #wages = int(args['YearlySalary'])
+    if "/" in str(end_date):
+        end_date = datetime.strptime(end_date, '%d/%m/%Y').strftime('%Y-%m-%d')
+    if "/" in str(start_date):
+        start_date = datetime.strptime(start_date, '%d/%m/%Y').strftime('%Y-%m-%d')
+                #wages = int(args['YearlySalary'])
     diff = (end_date - start_date)
     years = diff.days / 365.00
     weeksearned = ((diff.days/365.0)*2)+1
