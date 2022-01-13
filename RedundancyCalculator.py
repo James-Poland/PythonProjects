@@ -72,7 +72,7 @@ def main():
     end_date = p.parse(args['enddate'])
     start_date = p.parse(args['startdate'])
     wages = args['YearlySalary']
-    wagesclean = int(re.sub("[^\d\.]", "", wages))
+    wagesclean = int(float(re.sub("[^\d\.]", "", wages)))
     if "/" in str(end_date):
         end_date = datetime.strptime(end_date, '%d/%m/%Y').strftime('%Y-%m-%d')
     if "/" in str(start_date):
